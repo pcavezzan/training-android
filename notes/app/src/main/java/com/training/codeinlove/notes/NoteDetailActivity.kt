@@ -3,6 +3,7 @@ package com.training.codeinlove.notes
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
+import androidx.appcompat.widget.Toolbar
 
 class NoteDetailActivity : AppCompatActivity() {
     companion object {
@@ -18,7 +19,9 @@ class NoteDetailActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_detail)
-
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         note = intent.getParcelableExtra(EXTRA_NOTE)!!
         nodeIndex = intent.getIntExtra(EXTRA_NOTE_INDEX, -1)
 
