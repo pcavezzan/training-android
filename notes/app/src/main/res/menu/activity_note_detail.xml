@@ -8,5 +8,11 @@
         android:icon="@drawable/save_icon"
         android:title="Save"/>
 
+    <item
+        android:id="@+id/action_delete"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/delete_icon"
+        android:title="Supprimer"/>
+
 
 </menu>

@@ -59,8 +59,13 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
     private fun processEditNoteResult(data: Intent) {
         val noteIndex = data.getIntExtra(NoteDetailActivity.EXTRA_NOTE_INDEX, NEW_NOTE_INDEX)
-        val note = data.getParcelableExtra<Note>(NoteDetailActivity.EXTRA_NOTE)
-        saveNote(note!!, noteIndex)
+        when (data.action) {
+            NoteDetailActivity.ACTION_SAVE_NOTE -> {
+                val note = data.getParcelableExtra<Note>(NoteDetailActivity.EXTRA_NOTE)
+                saveNote(note!!, noteIndex)
+            }
+            NoteDetailActivity.ACTION_DELETE_NOTE -> deleteNote(noteIndex)
+        }
     }
 
     private fun saveNote(note: Note, noteIndex: Int) {
@@ -71,6 +76,15 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         }
         adapter.notifyDataSetChanged()
     }
+
+    private fun deleteNote(noteIndex: Int) {
+        if (noteIndex < 0) {
+            return
+        }
+        val note = notes.removeAt(noteIndex)
+        adapter.notifyDataSetChanged()
+    }
+
 
     private fun showNoteDetail(noteIndex: Int) {
         val note = if (noteIndex < 0) Note() else notes[noteIndex]
