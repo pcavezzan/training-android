@@ -3,11 +3,16 @@ package com.training.codeinlove.notes
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.training.codeinlove.notes.utils.deleteNote
+import com.training.codeinlove.notes.utils.loadNotes
+import com.training.codeinlove.notes.utils.persistNote
+import java.io.Serializable
 
 private const val NEW_NOTE_INDEX = -1
 
@@ -22,11 +27,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         findViewById<FloatingActionButton>(R.id.create_note_fab).setOnClickListener(this)
-
-        notes = mutableListOf()
-        notes.add(Note("Note 1", "Blablabla"))
-        notes.add(Note("Memo Bob", "Range ton linge"))
-        notes.add(Note("Memo Bobby", "Fais la vaiselle"))
+        notes = loadNotes(this).toMutableList()
         adapter = NoteAdapter(notes, this)
         val recycleView = findViewById<RecyclerView>(R.id.notes_recycle_view)
         recycleView.layoutManager = LinearLayoutManager(this)
@@ -69,6 +70,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     private fun saveNote(note: Note, noteIndex: Int) {
+        persistNote(this, note)
         if (noteIndex < 0) {
             notes.add(0, note)
         } else {
@@ -82,6 +84,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
         val note = notes.removeAt(noteIndex)
+        deleteNote(this, note)
         adapter.notifyDataSetChanged()
     }
 
@@ -89,7 +92,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     private fun showNoteDetail(noteIndex: Int) {
         val note = if (noteIndex < 0) Note() else notes[noteIndex]
         val intent = Intent(this, NoteDetailActivity::class.java)
-        intent.putExtra(NoteDetailActivity.EXTRA_NOTE, note)
+        intent.putExtra(NoteDetailActivity.EXTRA_NOTE, note as Serializable)
         intent.putExtra(NoteDetailActivity.EXTRA_NOTE_INDEX, noteIndex)
         startActivityForResult(intent, NoteDetailActivity.REQUEST_EDIT_NOTE)
     }
